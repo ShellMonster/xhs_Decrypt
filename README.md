@@ -106,13 +106,28 @@ go run cmd/test_real_cookie/main.go
 | 接口 | 方法 | 匿名态（仅 a1） | 登录态（a1 + web_session） |
 |------|------|-----------------|---------------------------|
 | 用户信息 `/api/sns/web/v2/user/me` | GET | code=-101 未登录 | code=0，返回昵称、用户ID |
-| 首页 Feed `/api/sns/web/v1/homefeed` | POST | code=-101 未登录 | code=0，返回推荐笔记列表 |
-| 搜索笔记 `/api/sns/web/v1/search/notes` | POST | code=-101 未登录 | code=0，返回搜索结果 |
-| 笔记详情 `/api/sns/web/v1/feed` | POST | code=-101 未登录 | code=0，返回笔记内容（笔记有效时） |
-| 评论列表 `/api/sns/web/v2/comment/page` | GET | code=-101 未登录 | code=0，返回评论数据（笔记有效时） |
+| 首页 Feed `/api/sns/web/v1/homefeed` | POST | code=-101 未登录 | code=0，返回推荐笔记列表（含视频/图文） |
+| 搜索笔记 `/api/sns/web/v1/search/notes` | POST | code=-101 未登录 | code=0，返回搜索结果（支持 `note_type` 筛选视频） |
+| 笔记详情 `/api/sns/web/v1/feed` | POST | code=-101 未登录 | code=0，返回笔记完整内容 |
+| 视频下载 | POST | - | 从笔记详情中提取 `video.media.stream.h264[].master_url`，获得原始 MP4 地址 |
+| 图片下载 | POST | - | 从笔记详情中提取 `image_list[].url_default`，获得原始图片地址 |
+| 评论列表 `/api/sns/web/v2/comment/page` | GET | code=-101 未登录 | code=0，返回评论数据 |
+| 子评论 `/api/sns/web/v2/comment/sub/page` | GET | code=-101 未登录 | code=0，返回二级评论 |
 
 - 返回 `-101` 表示签名正确但未登录，返回 `406` 或 `code=300` 才是签名错误。
 - Python 测试 19/19 通过，Go 测试 8/8 通过。
+
+### 视频接口说明
+
+视频笔记通过 `/api/sns/web/v1/feed` 获取详情，返回数据中包含视频流信息：
+
+```
+note_card.video.media.stream.h264[].master_url  → MP4 下载地址
+note_card.video.media.stream.h264[].quality_type → 画质（HD/FHD 等）
+note_card.video.capa.duration                    → 视频时长（秒）
+```
+
+搜索时可通过 `note_type` 参数筛选：`0`=全部，`1`=图文，`2`=视频。
 
 ## 技术说明
 

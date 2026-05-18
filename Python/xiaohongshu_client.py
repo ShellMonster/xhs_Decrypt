@@ -122,11 +122,25 @@ class XhsClient:
             params["xsec_token"] = xsec_token
         return self.get("/api/sns/web/v2/comment/page", params=params)
 
-    def search_notes(self, keyword: str):
+    def search_notes(self, keyword: str, page: int = 1, page_size: int = 20,
+                     sort: str = "general", note_type: int = 0):
         return self.post("/api/sns/web/v1/search/notes", body={
-            "keyword": keyword, "page": 1, "page_size": 20,
-            "search_id": str(uuid.uuid4()), "sort": "general", "note_type": 0,
+            "keyword": keyword, "page": page, "page_size": page_size,
+            "search_id": str(uuid.uuid4()), "sort": sort, "note_type": note_type,
         })
+
+    def get_sub_comments(self, note_id: str, root_comment_id: str, xsec_token: str = ""):
+        params = {
+            "note_id": note_id, "root_comment_id": root_comment_id,
+            "cursor": "", "image_formats": "jpg,webp,avif",
+        }
+        if xsec_token:
+            params["xsec_token"] = xsec_token
+        return self.get("/api/sns/web/v2/comment/sub/page", params=params)
+
+    def get_note_video(self, note_id: str, xsec_token: str = ""):
+        """获取笔记详情，视频笔记会返回视频下载地址"""
+        return self.get_note_feed(note_id, xsec_token)
 
 
 def run_probe(client: XhsClient) -> None:
