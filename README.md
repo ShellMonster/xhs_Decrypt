@@ -103,18 +103,16 @@ go run cmd/test_real_cookie/main.go
 
 ## 测试结果
 
-使用测试 a1 cookie（无登录态）：
-
-| 接口 | 方法 | 结果 |
-|------|------|------|
-| 用户信息 `/api/sns/web/v2/user/me` | GET | 通过（-101 未登录） |
-| 首页 Feed `/api/sns/web/v1/homefeed` | POST | 通过（-101 未登录） |
-| 搜索笔记 `/api/sns/web/v1/search/notes` | POST | 通过（-101 未登录） |
-| 笔记详情 `/api/sns/web/v1/feed` | POST | 通过（-101 未登录） |
-| 评论列表 `/api/sns/web/v2/comment/page` | GET | 通过（-101 未登录） |
+| 接口 | 方法 | 匿名态（仅 a1） | 登录态（a1 + web_session） |
+|------|------|-----------------|---------------------------|
+| 用户信息 `/api/sns/web/v2/user/me` | GET | code=-101 未登录 | code=0，返回昵称、用户ID |
+| 首页 Feed `/api/sns/web/v1/homefeed` | POST | code=-101 未登录 | code=0，返回推荐笔记列表 |
+| 搜索笔记 `/api/sns/web/v1/search/notes` | POST | code=-101 未登录 | code=0，返回搜索结果 |
+| 笔记详情 `/api/sns/web/v1/feed` | POST | code=-101 未登录 | code=0，返回笔记内容（笔记有效时） |
+| 评论列表 `/api/sns/web/v2/comment/page` | GET | code=-101 未登录 | code=0，返回评论数据（笔记有效时） |
 
 - 返回 `-101` 表示签名正确但未登录，返回 `406` 或 `code=300` 才是签名错误。
-- 传入真实 `a1` + `web_session` cookie 后，所有接口返回 `code=0` 正常业务数据。
+- Python 测试 19/19 通过，Go 测试 8/8 通过。
 
 ## 技术说明
 
