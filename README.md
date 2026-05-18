@@ -120,7 +120,9 @@ go run cmd/test_real_cookie/main.go
 
 - mnsv2 算法被 jsvmp（JS 虚拟机保护）包裹，核心逻辑在自定义字节码虚拟机中执行。
 - 本项目通过逆向 jsvmp 字节码，提取出完整的 payload 构建逻辑、XOR 密钥、自定义 Base64 字符表和哈希算法。
+- **纯算法实现，零外部依赖**：Python 版仅使用标准库（`hashlib`、`json`、`base64` 等），Go 版同样仅使用标准库。不依赖 Playwright 浏览器、Node.js、jsvmp 虚拟机或任何第三方 SDK。
 - Python 和 Go 实现完全等价，签名结果均可通过服务端验证。
+- 签名通过后，所有 `edith.xiaohongshu.com` 接口均可正常访问，能否拿到数据取决于登录态。
 
 ## Cookie 获取
 
