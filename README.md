@@ -107,10 +107,10 @@ go run cmd/test_real_cookie/main.go
 |------|------|-----------------|---------------------------|
 | 用户信息 `/api/sns/web/v2/user/me` | GET | code=-101 未登录 | code=0，返回昵称、用户ID |
 | 首页 Feed `/api/sns/web/v1/homefeed` | POST | code=-101 未登录 | code=0，返回推荐笔记列表（含视频/图文） |
-| 搜索笔记 `/api/sns/web/v1/search/notes` | POST | code=-101 未登录 | code=0，返回搜索结果（支持 `note_type` 筛选视频） |
-| 笔记详情 `/api/sns/web/v1/feed` | POST | code=-101 未登录 | code=0，返回笔记完整内容 |
-| 视频下载 | POST | - | 从笔记详情中提取 `video.media.stream.h264[].master_url`，获得原始 MP4 地址 |
-| 图片下载 | POST | - | 从笔记详情中提取 `image_list[].url_default`，获得原始图片地址 |
+| 搜索笔记 `/api/sns/web/v1/search/notes` | POST | code=-101 未登录 | code=0，返回搜索结果（`note_type` 筛选：0=全部 1=图文 2=视频） |
+| 笔记详情 `/api/sns/web/v1/feed` | POST | code=-101 未登录 | code=0，返回笔记完整内容、图片列表、视频流地址 |
+| 视频下载 `/api/sns/web/v1/feed` | POST | code=-101 未登录 | 同上，提取 `video.media.stream.h264[].master_url` 获得原始 MP4 地址，无加密可直接下载 |
+| 图片下载 `/api/sns/web/v1/feed` | POST | code=-101 未登录 | 同上，提取 `image_list[].url_default` 获得原始图片地址 |
 | 评论列表 `/api/sns/web/v2/comment/page` | GET | code=-101 未登录 | code=0，返回评论数据 |
 | 子评论 `/api/sns/web/v2/comment/sub/page` | GET | code=-101 未登录 | code=0，返回二级评论 |
 
